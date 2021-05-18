@@ -102,6 +102,9 @@ func (g *Github) ScrapeIssues(d db.DB, who, repo string) error {
 		return err
 	}
 	for _, issue := range issues {
+		if issue.GetPullRequestLinks() != nil {
+			continue
+		}
 		err = importIssue(d, who, repo, issue)
 		if err != nil {
 			return err
@@ -218,6 +221,5 @@ func Scrape(token string, d db.DB, users_or_orgs ...string) error {
 		}
 	}
 
-	DedupePullRequests(d)
 	return nil
 }
